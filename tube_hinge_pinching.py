@@ -109,14 +109,29 @@ print('Base elliptical shell (Rx=%.4f, Ry=%.4f, L=%.1f)' % (R_x, R_y, L_total))
 # =============================================================
 # [3] 2D -> 3D projection
 # =============================================================
-N = len(points_2d) // 4
-top_right_block = points_2d[0:N]
-top_left_block  = points_2d[N:2*N]
-bot_left_block  = points_2d[2*N:3*N]
-bot_right_block = points_2d[3*N:4*N]
+# Cutout point order from bezier_c2_cutout_sampling/mirror_to_full():
+#   TL(100) -> TR(100) -> BR[1:](99) -> BL[1:](99) -> close(1) = 399 pts
+# Starts at left-axis crossing (-x3, 0), traverses CCW, closes back to start.
+# Find the two unique Y=0 axis crossings, then split into top/bot halves (both LTR).
 
-top_2d = top_left_block + top_right_block
-bot_2d = bot_left_block[::-1] + bot_right_block
+# Drop closing duplicate (last point == first point)
+if len(points_2d) >= 2 and points_2d[0] == points_2d[-1]:
+    points_2d = points_2d[:-1]
+
+zero_idx = [i for i in range(len(points_2d)) if abs(points_2d[i][1]) < 1e-6]
+if len(zero_idx) >= 2:
+    i_left  = zero_idx[0]   # left  axis crossing (-x3, 0)
+    i_right = zero_idx[1]   # right axis crossing (+x3, 0)
+    # Top half LTR: i_left -> top -> i_right
+    top_2d = points_2d[i_left : i_right + 1]
+    # Bot half CCW (RTL): i_right -> bottom -> wrap back to i_left
+    bot_2d_ccw = points_2d[i_right:] + [points_2d[i_left]]
+    # Reverse to LTR to match the script's downstream convention
+    bot_2d = list(reversed(bot_2d_ccw))
+else:
+    # Fallback (shouldn't happen for well-formed Bezier cutouts)
+    top_2d = [p for p in points_2d if p[1] >= 0]
+    bot_2d = [p for p in points_2d if p[1] <= 0]
 
 top_pts = []
 for x2d, y2d in top_2d:
