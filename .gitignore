@@ -1,0 +1,53 @@
+# =============================================================
+# Simulation outputs (generated per machine, large)
+# =============================================================
+sim_*/
+plot/
+results.csv
+mbo_pinching_log.csv
+
+# Abaqus working files
+*.odb
+*.dat
+*.msg
+*.sta
+*.com
+*.log
+*.lck
+*.sim
+*.prt
+*.mdl
+*.stt
+*.res
+*.SMABulk
+*.SMAFocus
+*.abq
+*.pac
+*.sel
+*.ipm
+*.fil
+*.023
+*.exception
+
+# Auto-generated wrapper scripts
+_temp_*.py
+_mbo_phase*.py
+
+# =============================================================
+# Python
+# =============================================================
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Jupyter
+.ipynb_checkpoints/
+
+# =============================================================
+# IDE / OS
+# =============================================================
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
