@@ -1,0 +1,13 @@
+- 아바쿠스 자동화 루프를 통해 200개의 시뮬레이션을 수행한다.
+- 해석은 qEHVI의 q-batch 특성을 활용해 매 iteration당 4코어 짜리 Abaqus job 3개를 병렬로 돌린다 (총 12코어 사용, q=3).
+- 데이터는 results.csv 에 담는다
+- 원통에 구멍을 뚫을 cutout 형상은 bezier_c2_cutout_sampling.ipynb 방식을 따르고, 이심률은 원통의 이심률이다.
+- (1-MAX_FI_ALL) 을 최대화 하고 MAX_SE도 최대화 하는 것이 목적이다.
+- Reference Point는 (1-MAX_FI_ALL) 은 0으로 MAX_SE는 400.0으로 설정한다.
+- 커널은 Matern12 커널을 사용한다
+- 관측 노이즈는 아바쿠스 데이터로 deterministic 하기 때문에 1e-6 로 설정한다. (Cholesky 수치안정성을 위한 jitter 수준)
+- 나머지 하이퍼파라미터는 1개의 시뮬레이션이 완수되고 results.csv에 반영하고 MAP로 최적화를 진행한다. (lengthscale ~ GammaPrior(3.0, 6.0), outputscale ~ GammaPrior(2.0, 0.15) — BoTorch SingleTaskGP default)
+- 획득함수는 qEHVI 로 한다. (구현은 BoTorch 권장 numerical fix variant인 qLogEHVI — qEHVI의 log-domain reparameterization, 수학적으로 동일하지만 optimization 안정성이 개선됨. arXiv:2310.20708)
+- 240개의 MBO탐색을 진행한다. (초기 40 + 추가 200)
+- 논문 reproduce의 일관성을 위해 랜덤시드는 42로 고정한다.
+- 해석을 진행할 아바쿠스 버전은 2024이다.

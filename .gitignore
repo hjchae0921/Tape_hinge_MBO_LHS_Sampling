@@ -33,6 +33,13 @@ mbo_pinching_log.csv
 _temp_*.py
 _mbo_phase*.py
 
+# Abaqus replay files
+abaqus.rpy
+abaqus.rpy.*
+
+# Local CSV backups
+results_local_*backup*.csv
+
 # =============================================================
 # Python
 # =============================================================
