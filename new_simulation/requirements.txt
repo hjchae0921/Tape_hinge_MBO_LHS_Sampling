@@ -1,0 +1,9 @@
+# MBO driver dependencies (runs in your *host* Python, NOT inside Abaqus CAE).
+# Use a separate venv from any system Python; abaqus cae has its own interpreter.
+torch>=2.1
+botorch>=0.10
+gpytorch>=1.11
+numpy>=1.24
+scipy>=1.10
+pandas>=2.0
+matplotlib>=3.7
